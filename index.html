@@ -12,6 +12,9 @@
     <link rel="stylesheet" href="styles/arcade-menu.css">
 </head>
 <body>
+    <div id="ghost-mode-banner" class="hidden fixed top-0 left-0 w-full bg-blue-600 text-white text-center py-1 font-bold z-[100] text-xs uppercase tracking-widest shadow-md">
+        👻 Ghost Mode Active - Save Data Frozen 👻
+    </div>
     <script src="scripts/assets.js"></script>
     <script src="scripts/arcade-config.js"></script>
     <script src="scripts/firebase-init.js"></script>
@@ -20,20 +23,18 @@
     <div class="absolute inset-0 z-50 flex flex-col items-center arcade-bg text-white overflow-hidden pt-6 pb-6">
         
         <!-- Header & Idea Lightbulb -->
-        <div class="relative w-full max-w-6xl px-6 flex justify-center items-center mb-8 mt-4">
+        <div class="relative w-full max-w-6xl px-4 flex justify-center items-start mb-6 mt-4">
             
-            <!-- Titles -->
-            <div class="text-center z-10">
-                <h1 id="arcade-title" class="text-4xl md:text-5xl font-black neon-text uppercase font-mono tracking-widest cursor-pointer select-none">Mr. Hemnell's</h1>
-                <h2 class="text-xl md:text-2xl font-bold text-cyan-200 tracking-wider mt-2">Learning Arcade</h2>
+            <div class="text-center z-10 pr-16 md:pr-0">
+                <h1 id="arcade-title" class="text-3xl md:text-5xl font-black neon-text uppercase font-mono tracking-widest cursor-pointer select-none">Mr. Hemnell's</h1>
+                <h2 class="text-lg md:text-2xl font-bold text-cyan-200 tracking-wider mt-1">Learning Arcade</h2>
             </div>
 
-            <!-- The Minimalist Idea Dropbox with Text -->
-            <div class="absolute right-6 top-0 flex flex-col items-center">
-                <button onclick="document.getElementById('modal-submit-idea').classList.remove('hidden')" class="text-5xl md:text-6xl hover:scale-110 transition-transform cursor-pointer drop-shadow-[0_0_20px_#0f0] z-50 animate-pulse" title="Submit an Idea!">
+            <div class="absolute right-2 md:right-6 top-0 flex flex-col items-center">
+                <button onclick="document.getElementById('modal-submit-idea').classList.remove('hidden')" class="text-4xl md:text-6xl hover:scale-110 transition-transform cursor-pointer drop-shadow-[0_0_20px_#0f0] z-50 animate-pulse" title="Submit an Idea!">
                     💡
                 </button>
-                <div class="text-green-400 font-mono text-[10px] md:text-xs mt-2 text-center leading-tight bg-black/50 p-1 rounded-md border border-green-500/50">
+                <div class="text-green-400 font-mono text-[9px] md:text-xs mt-1 md:mt-2 text-center leading-tight bg-black/50 p-1 rounded-md border border-green-500/50">
                     Have ideas?<br>Put 'em here!
                 </div>
             </div>

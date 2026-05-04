@@ -56,21 +56,43 @@ window.toggleCard = function(cardElement, event) {
 renderArcade();
 
 // ==========================================
-// 2. TEACHER CHEAT (7 Taps)
+// 2. TEACHER CHEAT (7 Taps & Ghost Banner)
 // ==========================================
 let tapCount = 0;
 let tapTimer;
+const ghostBanner = document.getElementById('ghost-mode-banner');
+
+// Check if Ghost Mode is already on when the page loads
+if (localStorage.getItem('isTeacherTesting') === 'true') {
+    ghostBanner.classList.remove('hidden');
+}
 
 document.getElementById('arcade-title').addEventListener('click', () => {
     tapCount++;
     clearTimeout(tapTimer);
+    
     if (tapCount >= 7) {
         tapCount = 0;
-        const pass = prompt("TEACHER OVERRIDE\nEnter Passcode:");
-        if (pass === "dogs123") {
-            localStorage.setItem('isTeacherTesting', 'true');
-            alert("✅ GHOST MODE ACTIVATED\nScores will NOT be saved to Firebase while testing.");
-        } else if (pass !== null) alert("❌ Incorrect Passcode.");
+        const isGhostOn = localStorage.getItem('isTeacherTesting') === 'true';
+        
+        if (isGhostOn) {
+            // Turning it OFF
+            const pass = prompt("DISABLE GHOST MODE\nEnter Passcode:");
+            if (pass === "dogs123") {
+                localStorage.removeItem('isTeacherTesting');
+                ghostBanner.classList.add('hidden');
+                alert("❌ GHOST MODE DISABLED\nScores and data will now be saved normally.");
+                window.location.reload(); // Refresh to revert everything!
+            } else if (pass !== null) alert("❌ Incorrect Passcode.");
+        } else {
+            // Turning it ON
+            const pass = prompt("ENABLE GHOST MODE\nEnter Passcode:");
+            if (pass === "dogs123") {
+                localStorage.setItem('isTeacherTesting', 'true');
+                ghostBanner.classList.remove('hidden');
+                alert("✅ GHOST MODE ACTIVATED\nData and high scores will NOT be saved.");
+            } else if (pass !== null) alert("❌ Incorrect Passcode.");
+        }
     }
     tapTimer = setTimeout(() => { tapCount = 0; }, 2000); 
 });
