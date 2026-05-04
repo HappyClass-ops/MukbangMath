@@ -14,25 +14,25 @@
 
 .neon-text { text-shadow: 0 0 5px #0ff, 0 0 10px #0ff, 0 0 20px #0ff; color: #fff; }
 
-/* THE PC-FRIENDLY HORIZONTAL SCROLLER */
+/* THE RESPONSIVE HORIZONTAL SCROLLER */
 .game-scroller {
     display: flex;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
-    gap: 2rem;
-    padding: 1rem 2rem 2rem 2rem;
+    gap: 1rem; /* Smaller gap on mobile so the next card peeks closer */
+    padding: 1rem; /* Less padding on mobile to save screen space */
 }
 
-/* Custom Scrollbar so PC users can grab it */
+/* Custom Scrollbar for PC */
 .game-scroller::-webkit-scrollbar { height: 10px; }
 .game-scroller::-webkit-scrollbar-thumb { background-color: #475569; border-radius: 5px; }
 
-/* FULL BLEED CARD SETUP */
+/* FULL BLEED CARD SETUP (Mobile First) */
 .arcade-card {
-    flex: 0 0 320px; 
-    height: 420px;   
+    flex: 0 0 260px; /* Thinner on mobile so the next card peeks out! */
+    height: 350px;   /* Shorter on mobile so it fits the screen without scrolling down */
     scroll-snap-align: center;
-    border-radius: 2rem;
+    border-radius: 1.5rem;
     position: relative;
     overflow: hidden;
     cursor: pointer;
@@ -45,7 +45,7 @@
     inset: 0;
     width: 100%;
     height: 100%;
-    object-fit: cover; /* Stretches to fill */
+    object-fit: cover; 
     z-index: 1;
     opacity: 0.6;
     animation: slowBreath 15s infinite alternate ease-in-out;
@@ -63,9 +63,9 @@
     inset: 0;
     z-index: 2;
     display: flex;
-    align-items: flex-end; /* Pushes text to the bottom */
+    align-items: flex-end; 
     justify-content: center;
-    padding-bottom: 3rem;
+    padding-bottom: 2rem; /* Adjusted for smaller mobile card */
     background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 60%);
     transition: opacity 0.3s ease;
 }
@@ -75,19 +75,19 @@
     position: absolute;
     inset: 0;
     z-index: 3;
-    background: rgba(0,0,0,0.85); /* Black background fade */
+    background: rgba(0,0,0,0.85); 
     backdrop-filter: blur(4px);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 2rem;
+    padding: 1.5rem; /* Tighter padding for mobile */
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.3s ease;
 }
 
-/* 4. THE FLIP LOGIC (Controlled by JS for perfect mobile tapping) */
+/* 4. THE FLIP LOGIC */
 .arcade-card.flipped .card-front { opacity: 0; }
 .arcade-card.flipped .card-back { opacity: 1; pointer-events: auto; }
 .arcade-card.flipped .card-bg-img { filter: blur(2px) brightness(0.5); }
@@ -97,4 +97,25 @@
     .arcade-card:hover .card-front { opacity: 0; }
     .arcade-card:hover .card-back { opacity: 1; pointer-events: auto; }
     .arcade-card:hover .card-bg-img { filter: blur(2px) brightness(0.5); }
+}
+
+/* =========================================
+   PC & TABLET OVERRIDES (Make them big again!)
+   ========================================= */
+@media (min-width: 768px) {
+    .game-scroller {
+        gap: 2rem;
+        padding: 1rem 2rem 2rem 2rem;
+    }
+    .arcade-card {
+        flex: 0 0 320px; 
+        height: 420px;   
+        border-radius: 2rem;
+    }
+    .card-front {
+        padding-bottom: 3rem;
+    }
+    .card-back {
+        padding: 2rem;
+    }
 }
