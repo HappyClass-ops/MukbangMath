@@ -5,12 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Math-Bang ASMR</title>
     
-    <!-- 1. CORE LIBRARIES (Tailwind, React, and Babel) -->
+    <!-- 1. CORE LIBRARIES -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    
-    <!-- THIS IS THE BABEL LIBRARY SCRIPT -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     
     <!-- 2. FIREBASE -->
@@ -19,27 +17,21 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
     <script src="../scripts/firebase-init.js"></script>
 
-    <!-- 3. STYLES (Animations are now inside this file!) -->
+    <!-- 3. STYLES -->
     <link rel="stylesheet" href="../styles/global.css">
     <link rel="stylesheet" href="styles/mathbang.css">
 </head>
 
 <body class="bg-slate-900 overflow-hidden touch-none">
 
-    <!-- 4. GHOST MODE BANNER (Must be inside <body> to be seen!) -->
-    <div id="ghost-banner" class="hidden fixed top-0 left-0 w-full bg-blue-600 text-white text-center py-1 font-bold z-[100] text-xs uppercase tracking-widest shadow-md">
-        👻 Ghost Mode Active - Save Data Frozen 👻
-    </div>
-
-    <!-- The React App injects all the buttons/character/food right here -->
+    <!-- All game content, including the Ghost Banner, will be built here by React -->
     <div id="mathbang-root" class="absolute inset-0 z-40 bg-[#0f172a]"></div>
 
-    <!-- 5. LEGO BLOCKS (Loading your data) -->
+    <!-- 4. LEGO BLOCKS -->
     <script src="scripts/assets.js"></script>
     <script src="scripts/settings.js"></script>
     <script src="scripts/math-engine.js"></script>
     
-    <!-- NOTICE: These 3 use type="text/babel" because they contain visual React code! -->
     <script type="text/babel" src="scripts/challenges.js"></script>
     <script type="text/babel" src="scripts/foods.js"></script>
     <script type="text/babel" src="scripts/skins.js"></script>
@@ -48,7 +40,7 @@
     <script src="scripts/character.js"></script>
     <script src="scripts/kitchen.js"></script>
 
-    <!-- 6. THE MAIN ENGINE (The brain that puts it all together) -->
+    <!-- 5. THE MAIN ENGINE -->
     <script type="text/babel" src="scripts/game-engine.js"></script>
 
 </body>

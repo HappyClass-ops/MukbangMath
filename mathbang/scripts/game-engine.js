@@ -1,5 +1,5 @@
 // ==========================================
-// MATH-BANG REACT ENGINE (Fully Modular)
+// MATH-BANG REACT ENGINE (Fully Modular + Ghost Mode)
 // ==========================================
 
 const { useState, useEffect, useRef } = React;
@@ -14,6 +14,28 @@ const CHALLENGES = window.MATHBANG_CHALLENGES;
 const MINIGAMES = window.MATHBANG_MINIGAMES;
 const { HAIR_COLORS, SHIRT_COLORS } = window.MATHBANG_SETTINGS;
 const MathEngine = window.MathEngine;
+
+// --- GHOST OVERRIDE TOOLS (Teacher Only) ---
+const GhostTools = ({ setLikes, isGhostMode }) => {
+    const [isOpen, setIsOpen] = useState(false);
+    if (!isGhostMode) return null;
+
+    return (
+        <div className="fixed bottom-24 right-4 z-[100] flex flex-col items-end gap-2">
+            {isOpen && (
+                <div className="bg-blue-900 border-2 border-blue-400 p-4 rounded-2xl shadow-2xl flex flex-col gap-2 animate-[floatUp_0.3s_ease-out]">
+                    <h4 className="text-white font-black text-[10px] text-center border-b border-blue-400 pb-2 mb-1">GHOST TOOLS</h4>
+                    <button onClick={() => setLikes(prev => prev + 5000)} className="bg-blue-500 text-white px-3 py-1.5 rounded-lg font-bold text-[10px] active:scale-95">+ 5K Likes</button>
+                    <button onClick={() => setLikes(prev => prev + 50000)} className="bg-cyan-500 text-white px-3 py-1.5 rounded-lg font-bold text-[10px] active:scale-95">+ 50K Likes</button>
+                    <button onClick={() => { localStorage.removeItem('isTeacherTesting'); window.location.reload(); }} className="bg-red-500 text-white px-3 py-1.5 rounded-lg font-bold text-[10px] active:scale-95">Disable Ghost</button>
+                </div>
+            )}
+            <button onClick={() => setIsOpen(!isOpen)} className="w-12 h-12 bg-blue-600 rounded-full shadow-lg border-2 border-white text-2xl flex items-center justify-center active:scale-90">
+                {isOpen ? '❌' : '👻'}
+            </button>
+        </div>
+    );
+};
 
 const DrawPad = ({ problem, onClose }) => {
     const canvasRef = useRef(null); const [isDrawing, setIsDrawing] = useState(false);
@@ -56,6 +78,7 @@ const CharacterSVG = ({ profile, isChewing, isMouthHovered, chewFrame, wrongFeed
 function MathBangApp() {
     const [gameState, setGameState] = useState('loading'); 
     const [view, setView] = useState('stream'); 
+    const [isGhostMode, setIsGhostMode] = useState(false);
     const [showDraw, setShowDraw] = useState(false);
     const [playerProfile, setPlayerProfile] = useState({ name: '', base: 'boy', hairStyle: 'style1', hairColor: 'black', skin: 'default', shirt: '#a1c4fd' });
     const [likes, setLikes] = useState(0);
@@ -63,17 +86,14 @@ function MathBangApp() {
     const [unlockedSkins, setUnlockedSkins] = useState(['default']);
     const [unlockedFoods, setUnlockedFoods] = useState(['cracker']);
     const [currentFoodId, setCurrentFoodId] = useState('cracker');
-    
-    // Core Game States
     const [stats, setStats] = useState({ ramenEaten: 0, tanghuluEaten: 0, kakigoriEaten: 0 });
+    
     const [mathSubject, setMathSubject] = useState('addition');
     const [problem, setProblem] = useState({ question: '', answer: '', options: [] });
     const [wrongFeedback, setWrongFeedback] = useState(false);
     const [shopChallenge, setShopChallenge] = useState({ active: false, food: null, problem: null });
     const [leaderboard, setLeaderboard] = useState([]);
     const [currentBitesLeft, setCurrentBitesLeft] = useState(1);
-    
-    // Animation States
     const [draggingIndex, setDraggingIndex] = useState(null);
     const [dragPos, setDragPos] = useState({ x: 0, y: 0 });
     const [isMouthHovered, setIsMouthHovered] = useState(false);
@@ -88,27 +108,38 @@ function MathBangApp() {
     const currentFood = FOOD_DATABASE.find(f => f.id === currentFoodId) || FOOD_DATABASE[0];
     const mathLevel = Math.min(3, Math.floor(correctAnswers / 10) + 1);
 
+    // 1. Initial Load & Ghost Check
     useEffect(() => {
-        const saved = localStorage.getItem('mathbang_v6_save');
+        const checkGhost = localStorage.getItem('isTeacherTesting') === 'true';
+        setIsGhostMode(checkGhost);
+
+        if (checkGhost) {
+            setLikes(10000); 
+            setGameState('active');
+            return;
+        }
+
+        const saved = localStorage.getItem('mathbang_v7_save');
         if (saved) {
             const d = JSON.parse(saved);
-            setPlayerProfile(d.playerProfile || { name: 'Streamer', base: 'boy', hairStyle: 'style1', hairColor: 'black', skin: 'default', shirt: '#a1c4fd' });
-            setLikes(d.likes || 0); setCorrectAnswers(d.correctAnswers || 0);
-            setUnlockedSkins(d.unlockedSkins || ['default']); setUnlockedFoods(d.unlockedFoods || ['cracker']);
-            setCurrentFoodId(d.currentFoodId || 'cracker'); setCurrentBitesLeft(d.currentBitesLeft || 1);
-            setStats(d.stats || { ramenEaten: 0, tanghuluEaten: 0, kakigoriEaten: 0 });
+            setPlayerProfile(d.playerProfile);
+            setLikes(d.likes); setCorrectAnswers(d.correctAnswers);
+            setUnlockedSkins(d.unlockedSkins); setUnlockedFoods(d.unlockedFoods);
+            setCurrentFoodId(d.currentFoodId); setCurrentBitesLeft(d.currentBitesLeft);
+            setStats(d.stats);
             setGameState('active');
         } else setGameState('onboarding_char');
     }, []);
 
+    // 2. Save Logic (Blocked if Ghost Mode)
     useEffect(() => {
-        if (gameState === 'active') {
-            localStorage.setItem('mathbang_v6_save', JSON.stringify({ playerProfile, likes, correctAnswers, unlockedSkins, unlockedFoods, currentFoodId, currentBitesLeft, stats }));
+        if (gameState === 'active' && !isGhostMode) {
+            localStorage.setItem('mathbang_v7_save', JSON.stringify({ playerProfile, likes, correctAnswers, unlockedSkins, unlockedFoods, currentFoodId, currentBitesLeft, stats }));
         }
     }, [playerProfile, likes, correctAnswers, unlockedSkins, unlockedFoods, currentFoodId, currentBitesLeft, stats, gameState]);
 
     const syncToCloud = async () => {
-        if(!playerProfile.name) return;
+        if(!playerProfile.name || isGhostMode) return;
         try {
             await dbMB.collection("mukbang_leaderboard").doc(authMB.currentUser?.uid || playerProfile.name).set({ name: playerProfile.name, likes: likes, foodEmoji: currentFood.emoji, skin: playerProfile.skin, profile: playerProfile, date: new Date().toISOString() }, { merge: true });
             const snapshot = await dbMB.collection("mukbang_leaderboard").get();
@@ -201,7 +232,6 @@ function MathBangApp() {
         return <div style={{transform:`scale(${iDS})`, transition:'transform 0.2s'}}><div className="text-6xl drop-shadow-xl">{currentFood.emoji}</div></div>;
     };
 
-    // DYNAMIC MINIGAME CHECKER (Checks challenges.js to see if a minigame is active!)
     const ActiveMinigame = MINIGAMES.find(m => m.id === view);
 
     if (gameState === 'loading') return null;
@@ -240,11 +270,22 @@ function MathBangApp() {
         <div className="min-h-screen bg-transparent flex justify-center items-center font-sans select-none relative w-full h-[100dvh]">
             <div className="w-full max-w-md h-[100dvh] max-h-[850px] bg-white flex flex-col relative overflow-hidden shadow-2xl sm:rounded-3xl">
                 
+                {/* BLUE BANNER */}
+                {isGhostMode && (
+                    <div className="fixed top-0 left-0 w-full bg-blue-600 text-white text-center py-1 font-bold z-[100] text-[10px] uppercase tracking-widest shadow-md">
+                        👻 Ghost Mode Active - Save Data Frozen 👻
+                    </div>
+                )}
+
+                {/* GHOST TOOLS BUTTON */}
+                <GhostTools setLikes={setLikes} isGhostMode={isGhostMode} />
+
                 {/* GLOBAL HEADERS */}
                 {(view === 'stream' || view === 'kitchen' || view === 'shop' || view === 'wardrobe' || view === 'leaderboard' || view === 'mathSetup') && (
-                    <header className={`p-2 sm:p-3 shadow-sm z-40 flex flex-wrap justify-between items-center absolute top-0 w-full border-b backdrop-blur-md gap-y-2 ${view==='stream'?'bg-white/90 border-slate-100':view==='kitchen'?'bg-teal-100/90 border-teal-200':view==='shop'?'bg-amber-200/90 border-amber-300':view==='wardrobe'?'bg-pink-200/90 border-pink-300':view==='leaderboard'?'bg-yellow-200/90 border-yellow-300':'bg-blue-200/90 border-blue-300'}`}>
+                    <header className={`p-2 sm:p-3 shadow-sm z-40 flex flex-wrap justify-between items-center absolute top-0 w-full border-b backdrop-blur-md gap-y-2 ${isGhostMode ? 'mt-6' : ''} ${view==='stream'?'bg-white/90 border-slate-100':view==='kitchen'?'bg-teal-100/90 border-teal-200':view==='shop'?'bg-amber-200/90 border-amber-300':view==='wardrobe'?'bg-pink-200/90 border-pink-300':view==='leaderboard'?'bg-yellow-200/90 border-yellow-300':'bg-blue-200/90 border-blue-300'}`}>
                         <div className="flex gap-2">
-                           <button onClick={() => window.location.href = '../index.html'} className="bg-slate-800 text-white px-3 py-2 rounded-xl text-lg font-black border-b-4 border-slate-900 active:translate-y-1 hover:bg-slate-700">🏠</button>
+                            {/* THE FIXED HOME LINK */}
+                            <button onClick={() => window.location.href = '../index.html'} className="bg-slate-800 text-white px-3 py-2 rounded-xl text-lg font-black border-b-4 border-slate-900 active:translate-y-1 hover:bg-slate-700">🏠</button>
                             {view === 'stream' && <div className="bg-pink-100 text-pink-600 px-3 py-2 rounded-2xl font-black text-sm border-b-4 border-pink-200 flex flex-col items-center"><span>❤️ {likes.toLocaleString()}</span><span className="text-[10px] uppercase text-pink-400">Lv.{mathLevel}</span></div>}
                             {view !== 'stream' && <button onClick={()=>setView('stream')} className="bg-white text-slate-800 px-4 py-2 rounded-xl font-black text-sm shadow-sm active:scale-95">⬅️ Return</button>}
                         </div>
@@ -311,7 +352,6 @@ function MathBangApp() {
                         <div className="flex-1 bg-gradient-to-b from-teal-100 to-teal-50 w-full flex flex-col items-center overflow-y-auto relative pt-16">
                             <h2 className="text-3xl font-black text-teal-800 mb-8 mt-6">Kitchen</h2>
                             <div className="flex flex-col gap-4 w-full max-w-xs pb-10">
-                                {/* DYNAMICALLY RENDERS BUTTONS BASED ON challenges.js */}
                                 {MINIGAMES.map(game => (
                                     <button key={game.id} onClick={() => setView(game.id)} className={`bg-white border-4 border-${game.colorTheme}-200 rounded-3xl p-5 shadow-lg active:scale-95 flex items-center gap-4`}>
                                         <span className="text-5xl">{game.emoji}</span><span className={`font-bold text-${game.colorTheme}-700 text-lg`}>{game.name}</span>
@@ -321,7 +361,6 @@ function MathBangApp() {
                         </div>
                     )}
                     
-                    {/* DYNAMICALLY RENDERS THE ACTIVE MINIGAME FROM challenges.js! */}
                     {ActiveMinigame && (
                         <ActiveMinigame.Component 
                             playSound={playSound}
