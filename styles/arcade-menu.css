@@ -1,5 +1,5 @@
 /* =========================================
-   ARCADE MENU STYLES (VERTICAL GRID)
+   ARCADE MENU STYLES (SCI-FI THEME)
    ========================================= */
 .arcade-bg {
     background-color: #090a0f;
@@ -17,50 +17,28 @@
 
 .neon-text { text-shadow: 0 0 5px #0ff, 0 0 10px #0ff, 0 0 20px #0ff; color: #fff; }
 
-/* THE RESPONSIVE NEON GRID */
-.game-grid-container {
-    display: grid;
-    grid-template-columns: 1fr; /* Mobile: 1 column */
-    gap: 1.5rem;
-    width: 100%;
+/* THE NETFLIX CAROUSEL */
+.game-carousel-container {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    gap: 2rem;
+    scrollbar-width: none; /* Hides scrollbar on Firefox */
+    -ms-overflow-style: none; /* Hides scrollbar on IE/Edge */
+}
+/* Hides scrollbar on Chrome/Safari */
+.game-carousel-container::-webkit-scrollbar {
+    display: none;
 }
 
-@media (min-width: 640px) {
-    .game-grid-container {
-        grid-template-columns: 1fr 1fr; /* PC/Tablet: 2 columns */
-    }
-}
-
+/* THE CARDS */
 .arcade-card {
-    border-radius: 1.5rem;
+    flex: 0 0 320px; /* Fixed width of the cards */
+    height: 420px;   /* Fixed height of the cards */
+    scroll-snap-align: center;
+    border-radius: 2rem;
     position: relative;
     overflow: hidden;
-    transition: transform 0.2s, box-shadow 0.2s;
-}
-
-/* MAGIC FIX: Only apply pop-out hover effects on devices with a real mouse (PCs) */
-@media (hover: hover) and (pointer: fine) {
-    .arcade-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 20px rgba(0,255,255,0.4);
-    }
-}
-
-/* PERFECT IMAGE BOX */
-.image-box {
-    width: 100%;
-    height: 140px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: rgba(255,255,255,0.05);
-    border-radius: 1rem;
-    margin-bottom: 1rem;
-    overflow: hidden;
-}
-
-.image-box img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain; /* Prevents image stretching */
+    cursor: pointer;
+    background-color: #000;
 }

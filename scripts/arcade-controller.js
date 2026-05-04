@@ -1,37 +1,48 @@
 // ==========================================
-// 1. RENDER THE GRID
+// 1. RENDER THE NETFLIX CAROUSEL
 // ==========================================
 function renderArcade() {
-    // Target the existing div but change its classes to use our new grid system
     const container = document.getElementById('game-carousel'); 
-    container.className = "game-grid-container w-full max-w-4xl px-4 mb-10"; 
     container.innerHTML = ""; 
 
+    // Loop through the games in arcade-config.js
     window.ARCADE_GAMES.forEach(game => {
-        // Pro Fix: Clean, crash-proof image handling
-        let imageContent;
-        if (game.coverArt && game.coverArt.trim() !== "") {
-            // If image link dies, silently replace the entire box with the emoji
-            imageContent = `<img src="${game.coverArt}" alt="${game.title}" onerror="this.parentElement.innerHTML='<div class=\\'text-6xl\\'>${game.emoji}</div>';">`;
-        } else {
-            imageContent = `<div class="text-6xl">${game.emoji}</div>`;
-        }
+        // Skip anything marked as disabled (we will hardcode the coming soon card)
+        if (game.disabled) return;
 
-        const actionButton = game.disabled 
-            ? `<button disabled class="w-full py-3 bg-slate-800 text-slate-500 font-black text-xl rounded-xl uppercase tracking-wider cursor-not-allowed">Coming Soon</button>`
-            : `<button onclick="window.location.href='${game.folder}/index.html'" class="w-full py-3 ${game.buttonColor} hover:brightness-110 text-black font-black text-xl rounded-xl transition-all active:scale-95 uppercase tracking-wider" style="box-shadow: 0 0 15px ${game.themeColor};">Play Now</button>`;
-
+        // Build the Full-Bleed Card
         container.innerHTML += `
-            <div class="arcade-card bg-black/60 backdrop-blur-md p-6 flex flex-col items-center text-center" style="border: 2px solid ${game.themeColor};">
-                <div class="image-box">
-                    ${imageContent}
+            <div class="arcade-card group" style="border: 2px solid ${game.themeColor}; box-shadow: 0 0 15px ${game.themeColor};">
+                
+                <!-- 1. The Faded Background Image -->
+                <img src="${game.coverArt}" onerror="this.src='${window.ROOT_ASSETS.ImageSafetyNet}'" class="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:opacity-10 transition-opacity duration-500">
+                
+                <!-- 2. The Big Emoji (Disappears on Tap/Hover) -->
+                <div class="absolute inset-0 flex items-center justify-center text-8xl group-hover:opacity-0 transition-opacity duration-500 drop-shadow-2xl">
+                    ${game.emoji}
                 </div>
-                <h3 class="text-2xl font-black mb-2 font-mono" style="color: ${game.themeColor};">${game.title}</h3>
-                <p class="text-slate-300 text-sm mb-6 flex-1">${game.description}</p>
-                ${actionButton}
+
+                <!-- 3. The Content (Appears on Tap/Hover) -->
+                <div class="absolute inset-0 flex flex-col items-center justify-center p-6 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-black/50">
+                    <h3 class="text-3xl font-black mb-4 font-mono text-center" style="color: ${game.themeColor}; text-shadow: 0 0 10px ${game.themeColor};">${game.title}</h3>
+                    <p class="text-slate-200 text-sm mb-8 text-center font-bold">${game.description}</p>
+                    <button onclick="window.location.href='${game.folder}/index.html'" class="w-full py-4 ${game.buttonColor} hover:brightness-110 text-black font-black text-xl rounded-xl transition-all active:scale-95 uppercase tracking-wider shadow-lg">PLAY NOW</button>
+                </div>
             </div>
         `;
     });
+
+    // AUTO-APPEND THE "COMING SOON" MYSTERY CARD AT THE END
+    container.innerHTML += `
+        <div class="arcade-card group opacity-70" style="border: 2px solid #475569;">
+            <div class="absolute inset-0 flex items-center justify-center text-8xl grayscale group-hover:opacity-0 transition-opacity duration-500">🚀</div>
+            <div class="absolute inset-0 flex flex-col items-center justify-center p-6 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-black/50">
+                <h3 class="text-3xl font-black mb-4 font-mono text-center text-slate-500">MYSTERY GAME</h3>
+                <p class="text-slate-400 text-sm mb-8 text-center font-bold">A new challenger is approaching... Keep studying to prepare!</p>
+                <button disabled class="w-full py-4 bg-slate-800 text-slate-500 font-black text-xl rounded-xl uppercase tracking-wider cursor-not-allowed">Coming Soon</button>
+            </div>
+        </div>
+    `;
 }
 
 renderArcade();
@@ -93,6 +104,7 @@ window.ArcadeAPI = {
             if(pwd !== null) alert("Incorrect Password! Access Denied. 🛑");
             return;
         }
+        document.getElementById('modal-submit-idea').classList.add('hidden'); // Close idea modal
         document.getElementById('modal-admin-ideas').classList.remove('hidden');
         const listEl = document.getElementById('admin-ideas-list');
         listEl.innerHTML = "<div class='text-center text-slate-500 font-mono py-10'>Decrypting Vault...</div>";

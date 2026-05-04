@@ -17,56 +17,52 @@
     <script src="scripts/firebase-init.js"></script>
 
     <!-- Main Background -->
-    <div class="absolute inset-0 z-50 flex flex-col items-center arcade-bg text-white overflow-y-auto custom-scrollbar pt-10 pb-10">
+    <div class="absolute inset-0 z-50 flex flex-col items-center arcade-bg text-white overflow-hidden pt-6 pb-6">
         
-        <!-- TAP 7 TIMES FOR CHEAT MODE -->
-        <h1 id="arcade-title" class="text-4xl md:text-5xl font-black text-center mb-2 neon-text uppercase font-mono tracking-widest cursor-pointer select-none">Mr. Hemnell's</h1>
-        <h2 class="text-2xl md:text-3xl font-bold text-center text-cyan-200 mb-8 tracking-wider">Learning Arcade</h2>
-
-        <!-- PAGED CAROUSEL CONTAINER -->
-        <div class="relative w-full max-w-4xl px-2 flex items-center justify-center mb-10">
-            <!-- Left Page Arrow (Hidden on Mobile) -->
-            <button onclick="window.ArcadeAPI.scrollCarousel(-1)" class="absolute left-2 z-20 p-4 bg-slate-900/80 text-white rounded-full hover:bg-slate-700 active:scale-90 border-2 border-slate-500 hidden md:block backdrop-blur-sm transition-transform">◀</button>
+        <!-- Header & Idea Lightbulb -->
+        <div class="relative w-full max-w-6xl px-6 flex justify-center items-center mb-8">
             
-            <!-- Cards Inject Here -->
-            <div id="game-carousel" class="game-carousel-container no-scrollbar w-full overflow-x-auto scroll-smooth flex gap-6 px-6 py-4 snap-x snap-mandatory">
-                <!-- Javascript will draw the cards here -->
+            <!-- Titles (Tap 7 times for Cheat Mode) -->
+            <div class="text-center z-10">
+                <h1 id="arcade-title" class="text-4xl md:text-5xl font-black neon-text uppercase font-mono tracking-widest cursor-pointer select-none">Mr. Hemnell's</h1>
+                <h2 class="text-xl md:text-2xl font-bold text-cyan-200 tracking-wider mt-2">Learning Arcade</h2>
             </div>
 
-            <!-- Right Page Arrow (Hidden on Mobile) -->
-            <button onclick="window.ArcadeAPI.scrollCarousel(1)" class="absolute right-2 z-20 p-4 bg-slate-900/80 text-white rounded-full hover:bg-slate-700 active:scale-90 border-2 border-slate-500 hidden md:block backdrop-blur-sm transition-transform">▶</button>
+            <!-- The Minimalist Idea Dropbox -->
+            <button onclick="document.getElementById('modal-submit-idea').classList.remove('hidden')" class="absolute right-6 top-0 text-5xl md:text-6xl hover:scale-110 transition-transform cursor-pointer drop-shadow-[0_0_20px_#0f0] z-50" title="Submit an Idea!">
+                💡
+            </button>
         </div>
 
-        <!-- IDEA DROPBOX -->
-        <div class="w-full max-w-md px-4 mt-auto">
-            <div class="bg-black/60 backdrop-blur-md border-2 border-green-500 rounded-2xl p-6 flex flex-col items-center text-center shadow-[0_0_10px_#0f0]">
-                <div class="text-5xl mb-3">💡</div>
-                <h3 class="text-xl font-black text-green-400 mb-2 font-mono">IDEA DROPBOX</h3>
-                <p class="text-slate-300 text-xs mb-4">Have an awesome idea? Let Mr. Hemnell know!</p>
-                <div class="flex w-full gap-2 mt-auto">
-                    <button onclick="document.getElementById('modal-submit-idea').classList.remove('hidden')" class="flex-1 py-3 bg-green-500 hover:bg-green-400 text-black font-black text-sm rounded-xl shadow-[0_0_10px_#0f0] active:scale-95 uppercase">Submit</button>
-                    <button onclick="window.ArcadeAPI.showAdminIdeas()" class="px-4 py-3 bg-slate-800 text-slate-400 border border-slate-600 font-bold text-xs rounded-xl hover:bg-slate-700 active:scale-95">Admin</button>
-                </div>
-            </div>
+        <!-- THE NETFLIX CAROUSEL CONTAINER -->
+        <div id="game-carousel" class="game-carousel-container w-full px-8 pb-8 flex-1 flex items-center">
+            <!-- JavaScript will draw the cards here! -->
         </div>
 
-        <button id="btnToggleMusic" onclick="window.ArcadeAPI.toggleMenuMusic()" class="mt-8 px-6 py-2 bg-slate-800 border-2 border-slate-600 text-slate-300 rounded-full font-mono text-sm hover:bg-slate-700 active:scale-95">🎵 Enable Arcade Music</button>
+        <!-- Music Toggle -->
+        <button id="btnToggleMusic" onclick="window.ArcadeAPI.toggleMenuMusic()" class="mt-4 px-6 py-2 bg-slate-800 border-2 border-slate-600 text-slate-300 rounded-full font-mono text-sm hover:bg-slate-700 active:scale-95 z-10">🎵 Enable Arcade Music</button>
     </div>
 
-    <!-- IDEAS MODALS -->
+    <!-- IDEAS MODAL (Admin Button moved inside here) -->
     <div id="modal-submit-idea" class="hidden absolute inset-0 z-[60] bg-black/90 backdrop-blur-sm flex justify-center items-center p-4">
-        <div class="bg-slate-900 border-2 border-green-500 rounded-2xl p-6 w-full max-w-md shadow-[0_0_20px_#0f0]">
+        <div class="bg-slate-900 border-2 border-green-500 rounded-2xl p-6 w-full max-w-md shadow-[0_0_30px_#0f0]">
             <h3 class="text-2xl font-black text-green-400 mb-4 font-mono">SUBMIT IDEA</h3>
             <input type="text" id="ideaAuthor" placeholder="Your Name" class="w-full bg-slate-800 border border-slate-600 text-white rounded-lg p-3 mb-3 focus:outline-none focus:border-green-500">
             <textarea id="ideaText" rows="4" placeholder="Describe your awesome game idea here..." class="w-full bg-slate-800 border border-slate-600 text-white rounded-lg p-3 mb-4 focus:outline-none focus:border-green-500"></textarea>
-            <div class="flex justify-end gap-3">
-                <button onclick="document.getElementById('modal-submit-idea').classList.add('hidden')" class="px-4 py-2 text-slate-400 font-bold hover:text-white">Cancel</button>
-                <button onclick="window.ArcadeAPI.sendIdea()" class="px-6 py-2 bg-green-500 text-black font-black rounded-lg hover:bg-green-400 shadow-[0_0_10px_#0f0]">SEND 🚀</button>
+            
+            <div class="flex justify-between items-center mt-2">
+                <!-- Admin Login is now hidden away in the corner -->
+                <button onclick="window.ArcadeAPI.showAdminIdeas()" class="text-slate-600 text-xs hover:text-slate-300 font-mono">Admin Login ⚙️</button>
+                
+                <div class="flex gap-3">
+                    <button onclick="document.getElementById('modal-submit-idea').classList.add('hidden')" class="px-4 py-2 text-slate-400 font-bold hover:text-white">Cancel</button>
+                    <button onclick="window.ArcadeAPI.sendIdea()" class="px-6 py-2 bg-green-500 text-black font-black rounded-lg hover:bg-green-400 shadow-[0_0_10px_#0f0]">SEND 🚀</button>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- ADMIN VAULT -->
+    <!-- ADMIN VAULT (INCLUDES NUKE BUTTON) -->
     <div id="modal-admin-ideas" class="hidden absolute inset-0 z-[60] bg-black/90 backdrop-blur-sm flex justify-center items-center p-4">
         <div class="bg-slate-900 border-2 border-purple-500 rounded-2xl p-6 w-full max-w-2xl shadow-[0_0_20px_#a855f7] max-h-[80dvh] flex flex-col">
             <div class="flex justify-between items-center mb-6">
@@ -76,7 +72,6 @@
             <div id="admin-ideas-list" class="flex-1 overflow-y-auto custom-scrollbar space-y-4 pr-2 mb-4">
                 <div class="text-center text-slate-500 font-mono py-10">Loading ideas...</div>
             </div>
-            <!-- THE NUKE BUTTON -->
             <button onclick="window.ArcadeAPI.nukeLocalData()" class="w-full py-3 bg-red-900 text-red-300 font-black border-2 border-red-500 rounded-xl hover:bg-red-800 transition-all uppercase">☢️ RESET ALL LOCAL SAVE DATA ☢️</button>
         </div>
     </div>
