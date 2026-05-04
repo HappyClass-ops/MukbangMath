@@ -1,1 +1,44 @@
+.arcade-bg {
+    background-color: #090a0f;
+    background-image: 
+        linear-gradient(0deg, transparent 24%, rgba(0, 255, 255, .1) 25%, rgba(0, 255, 255, .1) 26%, transparent 27%, transparent 74%, rgba(0, 255, 255, .1) 75%, rgba(0, 255, 255, .1) 76%, transparent 77%, transparent),
+        linear-gradient(90deg, transparent 24%, rgba(0, 255, 255, .1) 25%, rgba(0, 255, 255, .1) 26%, transparent 27%, transparent 74%, rgba(0, 255, 255, .1) 75%, rgba(0, 255, 255, .1) 76%, transparent 77%, transparent);
+    background-size: 50px 50px;
+    animation: panBg 20s linear infinite;
+}
+@keyframes panBg { from { background-position: 0 0; } to { background-position: -50px -50px; } }
 
+.neon-text { text-shadow: 0 0 5px #0ff, 0 0 10px #0ff, 0 0 20px #0ff; color: #fff; }
+
+/* THE NETFLIX CAROUSEL */
+.game-carousel-container {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    gap: 1.5rem;
+    padding: 1rem 2rem 2rem 2rem; /* Extra padding so hover shadows don't clip */
+}
+
+.carousel-card {
+    flex: 0 0 320px; /* Forces cards to be 320px wide */
+    scroll-snap-align: center;
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.carousel-card:hover {
+    transform: translateY(-10px) scale(1.05);
+}
+
+/* THE PERFECT IMAGE BOX */
+.image-bounding-box {
+    width: 100%;
+    height: 120px; /* Forces a strict height */
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.game-cover-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* MAGIC RULE: Fits image perfectly inside without stretching! */
+}
