@@ -29,10 +29,12 @@
 
 /* FULL BLEED CARD SETUP (Mobile First) */
 .arcade-card {
-    flex: 0 0 260px; /* Thinner on mobile so the next card peeks out! */
-    height: 350px;   /* Shorter on mobile so it fits the screen without scrolling down */
+    flex: 0 0 280px; /* Perfect width for the peek effect */
+    height: 55vh; /* MAGIC FIX: Dynamically shrinks on small phones! */
+    min-height: 320px; /* Ensures it doesn't get ridiculously small */
+    max-height: 420px; /* Caps out at a nice size for PC */
     scroll-snap-align: center;
-    border-radius: 1.5rem;
+    border-radius: 2rem;
     position: relative;
     overflow: hidden;
     cursor: pointer;

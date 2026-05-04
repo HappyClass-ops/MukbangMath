@@ -43,16 +43,11 @@ function renderArcade() {
 
 // TAP LOGIC FOR MOBILE: Tap to reveal button, tap elsewhere to hide
 window.toggleCard = function(cardElement, event) {
-    // If they click the Play button itself, don't interrupt the link
     if (event.target.closest('.play-btn')) return;
     
-    // Check if this card is currently flipped
     const isFlipped = cardElement.classList.contains('flipped');
-    
-    // Un-flip all cards
     document.querySelectorAll('.arcade-card').forEach(c => c.classList.remove('flipped'));
     
-    // If it wasn't flipped, flip this specific one
     if (!isFlipped) {
         cardElement.classList.add('flipped');
     }
@@ -84,9 +79,74 @@ document.getElementById('arcade-title').addEventListener('click', () => {
 // 3. MUSIC & ADMIN IDEAS
 // ==========================================
 let audioPlayer = null;
+
 window.ArcadeAPI = {
-    toggleMenuMusic: () => { /* ... existing music logic ... */ },
-    showAdminIdeas: async () => { /* ... existing admin logic ... */ },
-    sendIdea: async () => { /* ... existing send idea logic ... */ },
-    nukeLocalData: () => { /* ... existing nuke logic ... */ }
+    toggleMenuMusic: () => {
+        const btn = document.getElementById('btnToggleMusic');
+        
+        // This looks directly at your assets.js dictionary!
+        if (window.ROOT_ASSETS.SoundOfArcadeMenu) {
+            if(!audioPlayer) {
+                audioPlayer = new Audio(window.ROOT_ASSETS.SoundOfArcadeMenu);
+                audioPlayer.loop = true;
+            }
+            if(audioPlayer.paused) {
+                audioPlayer.play();
+                btn.innerText = "🔇 Disable Arcade Music";
+                btn.classList.add('bg-cyan-900', 'border-cyan-500', 'text-cyan-200');
+            } else {
+                audioPlayer.pause();
+                btn.innerText = "🎵 Enable Arcade Music";
+                btn.classList.remove('bg-cyan-900', 'border-cyan-500', 'text-cyan-200');
+            }
+        } else {
+            alert("No music file configured in assets.js!");
+        }
+    },
+    
+    showAdminIdeas: async () => {
+        const pwd = prompt("Enter Admin Password:");
+        if(pwd !== "dogs123") {
+            if(pwd !== null) alert("Incorrect Password! Access Denied. 🛑");
+            return;
+        }
+        document.getElementById('modal-submit-idea').classList.add('hidden');
+        document.getElementById('modal-admin-ideas').classList.remove('hidden');
+        const listEl = document.getElementById('admin-ideas-list');
+        listEl.innerHTML = "<div class='text-center text-slate-500 font-mono py-10'>Decrypting Vault...</div>";
+        
+        try {
+            const snap = await window.globalDb.collection("arcade_ideas").orderBy("timestamp", "desc").get();
+            if(snap.empty) { listEl.innerHTML = "<div class='text-center text-slate-500 font-mono py-10'>No ideas submitted.</div>"; return; }
+            let html = "";
+            snap.forEach(doc => {
+                const d = doc.data();
+                html += `<div class="bg-slate-800 border border-slate-700 rounded-xl p-4 mb-3">
+                            <div class="flex justify-between items-start mb-2"><span class="font-black text-purple-400 font-mono">${d.author}</span><span class="text-xs text-slate-500">${d.date}</span></div>
+                            <p class="text-slate-300 whitespace-pre-wrap">${d.text}</p>
+                         </div>`;
+            });
+            listEl.innerHTML = html;
+        } catch(e) { listEl.innerHTML = "<div class='text-center text-red-500 font-mono py-10'>Error loading vault.</div>"; }
+    },
+
+    sendIdea: async () => {
+        const author = document.getElementById('ideaAuthor').value.trim() || "Anonymous";
+        const text = document.getElementById('ideaText').value.trim();
+        if(!text) { alert("Please type an idea first!"); return; }
+        try {
+            await window.globalDb.collection("arcade_ideas").add({ author: author, text: text, date: new Date().toLocaleDateString(), timestamp: firebase.firestore.FieldValue.serverTimestamp() });
+            alert("Idea sent! 🚀");
+            document.getElementById('ideaAuthor').value = ""; document.getElementById('ideaText').value = "";
+            document.getElementById('modal-submit-idea').classList.add('hidden');
+        } catch(e) { alert("Failed to send idea. Check connection."); }
+    },
+
+    nukeLocalData: () => {
+        if(confirm("⚠️ WARNING ⚠️\nThis will permanently delete all local high scores and unlocked skins on this device. \n\nAre you sure?")) {
+            localStorage.clear();
+            alert("☢️ Local Data Nuked. Refreshing page...");
+            window.location.reload();
+        }
+    }
 };
