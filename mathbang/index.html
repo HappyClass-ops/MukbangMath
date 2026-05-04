@@ -1,1 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Math-Bang ASMR</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="../styles/global.css">
+    <link rel="stylesheet" href="styles/mathbang.css">
+</head>
+<body class="bg-slate-900 text-white overflow-hidden touch-none" id="game-body">
+    
+    <!-- GHOST MODE BANNER (Hidden by default) -->
+    <div id="ghost-banner" class="hidden fixed top-0 w-full bg-blue-600 text-center py-1 text-xs font-bold z-[100] uppercase tracking-widest shadow-md">
+        👻 Ghost Mode Active - Scores Frozen 👻
+    </div>
 
+    <!-- HEADER (Stats & Exit) -->
+    <header class="absolute top-0 w-full p-4 flex justify-between items-center z-50 mt-4 md:mt-0">
+        <button onclick="window.location.href='../index.html'" class="bg-slate-800 border-2 border-pink-500 text-pink-400 font-black px-4 py-2 rounded-xl active:scale-95 transition-all shadow-[0_0_10px_#f0f]">
+            ⬅ EXIT
+        </button>
+        <div class="bg-black/60 border-2 border-pink-500 px-6 py-2 rounded-xl backdrop-blur-md shadow-[0_0_10px_#f0f]">
+            <span class="text-pink-400 font-black font-mono text-xl">LIKES: <span id="ui-likes">0</span> ❤️</span>
+        </div>
+    </header>
+
+    <!-- MAIN GAME AREA -->
+    <main class="absolute inset-0 flex flex-col items-center justify-center pt-16 pb-[300px]">
+        
+        <!-- The Streamer's Food -->
+        <div id="food-container" class="relative transition-transform duration-300 flex justify-center items-center h-48 w-48 md:h-64 md:w-64 mb-6">
+            <div id="food-emoji" class="text-[120px] md:text-[160px] drop-shadow-2xl transition-all">🍔</div>
+            <!-- Bite Progress Bar -->
+            <div class="absolute -bottom-4 w-full h-4 bg-slate-800 rounded-full border border-slate-600 overflow-hidden">
+                <div id="bite-progress" class="h-full bg-green-500 w-0 transition-all duration-300"></div>
+            </div>
+        </div>
+
+        <!-- The Math Problem Board -->
+        <div class="bg-black/80 border-4 border-cyan-400 rounded-2xl p-6 md:p-8 text-center shadow-[0_0_20px_#0ff] min-w-[280px]">
+            <div id="math-question" class="text-4xl md:text-5xl font-black font-mono text-white mb-4 tracking-widest">? + ?</div>
+            <div id="math-answer" class="text-5xl md:text-6xl font-black text-cyan-300 h-16 border-b-4 border-slate-600 animate-pulse">= </div>
+        </div>
+
+    </main>
+
+    <!-- THE NUMPAD CONTROLLER -->
+    <div class="absolute bottom-0 w-full bg-slate-900/90 backdrop-blur-lg border-t-2 border-pink-500 p-4 pb-8 rounded-t-3xl shadow-[0_0_30px_#f0f]">
+        <div class="max-w-md mx-auto grid grid-cols-3 gap-3 md:gap-4">
+            <!-- JS will generate buttons 1-9 here -->
+            <button class="numpad-btn" onclick="GameEngine.pressKey(1)">1</button>
+            <button class="numpad-btn" onclick="GameEngine.pressKey(2)">2</button>
+            <button class="numpad-btn" onclick="GameEngine.pressKey(3)">3</button>
+            <button class="numpad-btn" onclick="GameEngine.pressKey(4)">4</button>
+            <button class="numpad-btn" onclick="GameEngine.pressKey(5)">5</button>
+            <button class="numpad-btn" onclick="GameEngine.pressKey(6)">6</button>
+            <button class="numpad-btn" onclick="GameEngine.pressKey(7)">7</button>
+            <button class="numpad-btn" onclick="GameEngine.pressKey(8)">8</button>
+            <button class="numpad-btn" onclick="GameEngine.pressKey(9)">9</button>
+            <button class="numpad-btn bg-red-500/20 text-red-400 border-red-500" onclick="GameEngine.clearAnswer()">CLEAR</button>
+            <button class="numpad-btn" onclick="GameEngine.pressKey(0)">0</button>
+            <button class="numpad-btn bg-green-500/20 text-green-400 border-green-500" onclick="GameEngine.submitAnswer()">SUBMIT</button>
+        </div>
+    </div>
+
+    <!-- INVISIBLE AUDIO PLAYERS -->
+    <audio id="audio-crunch" preload="auto"></audio>
+    <audio id="audio-buzzer" preload="auto"></audio>
+
+    <!-- LOAD ALL PREP BOWLS FIRST -->
+    <script src="scripts/settings.js"></script>
+    <script src="scripts/assets.js"></script>
+    <script src="scripts/foods.js"></script>
+    <script src="scripts/skins.js"></script>
+    <script src="scripts/math-engine.js"></script>
+    <script src="scripts/character.js"></script>
+    <script src="scripts/kitchen.js"></script>
+    
+    <!-- LOAD THE VISUAL ENGINE LAST -->
+    <script src="scripts/game-engine.js"></script>
+
+</body>
+</html>
