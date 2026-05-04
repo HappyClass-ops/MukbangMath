@@ -244,7 +244,7 @@ function MathBangApp() {
                 {(view === 'stream' || view === 'kitchen' || view === 'shop' || view === 'wardrobe' || view === 'leaderboard' || view === 'mathSetup') && (
                     <header className={`p-2 sm:p-3 shadow-sm z-40 flex flex-wrap justify-between items-center absolute top-0 w-full border-b backdrop-blur-md gap-y-2 ${view==='stream'?'bg-white/90 border-slate-100':view==='kitchen'?'bg-teal-100/90 border-teal-200':view==='shop'?'bg-amber-200/90 border-amber-300':view==='wardrobe'?'bg-pink-200/90 border-pink-300':view==='leaderboard'?'bg-yellow-200/90 border-yellow-300':'bg-blue-200/90 border-blue-300'}`}>
                         <div className="flex gap-2">
-                            <button onClick={() => window.ArcadeAPI.showMenu()} className="bg-slate-800 text-white px-3 py-2 rounded-xl text-lg font-black border-b-4 border-slate-900 active:translate-y-1 hover:bg-slate-700">🏠</button>
+                           <button onClick={() => window.location.href = '../index.html'} className="bg-slate-800 text-white px-3 py-2 rounded-xl text-lg font-black border-b-4 border-slate-900 active:translate-y-1 hover:bg-slate-700">🏠</button>
                             {view === 'stream' && <div className="bg-pink-100 text-pink-600 px-3 py-2 rounded-2xl font-black text-sm border-b-4 border-pink-200 flex flex-col items-center"><span>❤️ {likes.toLocaleString()}</span><span className="text-[10px] uppercase text-pink-400">Lv.{mathLevel}</span></div>}
                             {view !== 'stream' && <button onClick={()=>setView('stream')} className="bg-white text-slate-800 px-4 py-2 rounded-xl font-black text-sm shadow-sm active:scale-95">⬅️ Return</button>}
                         </div>
