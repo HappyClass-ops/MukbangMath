@@ -1,4 +1,10 @@
-/* HIDE SCROLLBARS */
+/* GLOBAL FIXES */
+body {
+    user-select: none; /* Stops the highlighting bug on PC */
+    -webkit-user-select: none;
+    overflow: hidden;
+}
+
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
@@ -6,26 +12,26 @@
     display: flex;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
-    gap: 3rem;
-    padding: 4rem 50vw; /* Centers the active card */
+    gap: 1.5rem;
+    padding: 2rem 50vw; 
     cursor: grab;
-    perspective: 1000px; /* Adds depth to the animations */
+    align-items: center;
+    height: 70vh; /* Keeps the carousel contained so buttons don't fall off */
 }
 
 .game-carousel-container:active { cursor: grabbing; }
 
 .carousel-card {
-    flex: 0 0 320px;
-    height: 450px;
+    flex: 0 0 280px; /* Slightly narrower for mobile safety */
+    height: 380px;   /* Slightly shorter for mobile safety */
     scroll-snap-align: center;
     position: relative;
-    border-radius: 2rem;
-    overflow: hidden;
+    border-radius: 1.5rem;
     background: #000;
-    transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.6s ease;
+    transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.3s ease;
 }
 
-/* ARTWORK LAYER (The "Cover") */
+/* ARTWORK LAYER */
 .card-artwork {
     position: absolute;
     inset: 0;
@@ -34,42 +40,39 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    transition: opacity 0.5s ease, transform 0.8s ease;
+    transition: opacity 0.4s ease;
 }
 
-/* INFO LAYER (The "Details") */
+/* INFO LAYER */
 .card-info {
     position: absolute;
     inset: 0;
     z-index: 5;
     background: rgba(0, 0, 0, 0.95);
-    padding: 2rem;
+    padding: 1.5rem;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     text-align: center;
     opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 0.4s ease, transform 0.4s ease;
+    transition: opacity 0.3s ease;
 }
 
-/* ACTIVE STATE (The Pop-Out) */
+/* THE TOGGLE STATES */
 .carousel-card.is-active {
-    transform: scale(1.2);
-    box-shadow: 0 0 40px var(--theme-color);
+    transform: scale(1.1);
+    box-shadow: 0 0 30px var(--theme-color);
 }
 
-/* REVEALED STATE (The Dissolve) */
 .carousel-card.is-revealed .card-artwork {
     opacity: 0;
-    transform: scale(1.1) rotateY(10deg);
     pointer-events: none;
 }
 
 .carousel-card.is-revealed .card-info {
     opacity: 1;
-    transform: translateY(0);
+    z-index: 15; /* Brings info to the front so buttons are clickable */
 }
 
 .game-cover-art {
@@ -77,6 +80,16 @@
     height: 100%;
     object-fit: cover;
     position: absolute;
-    opacity: 0.5;
-    filter: blur(1px);
+    opacity: 0.4;
+}
+
+/* MOBILE ADJUSTMENTS */
+@media (max-height: 700px) {
+    .carousel-card {
+        height: 320px;
+        flex: 0 0 240px;
+    }
+    .game-carousel-container {
+        padding-top: 1rem;
+    }
 }

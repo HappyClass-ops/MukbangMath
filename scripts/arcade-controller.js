@@ -1,48 +1,35 @@
 // ==========================================
-// 1. PRO DRAG-TO-SCROLL
+// 1. DRAG-TO-SCROLL (WITH CLICK PROTECTION)
 // ==========================================
 const slider = document.getElementById('game-carousel');
 let isDown = false;
 let startX;
 let scrollLeft;
+let hasMoved = false; // To distinguish between a drag and a click
 
 slider.addEventListener('mousedown', (e) => {
     isDown = true;
+    hasMoved = false;
     startX = e.pageX - slider.offsetLeft;
     scrollLeft = slider.scrollLeft;
-    slider.style.scrollBehavior = 'auto'; // Disable smooth scroll while dragging
+    slider.style.scrollBehavior = 'auto';
 });
 
-slider.addEventListener('mouseleave', () => isDown = false);
+slider.addEventListener('mousemove', (e) => {
+    if (!isDown) return;
+    const x = e.pageX - slider.offsetLeft;
+    const walk = (x - startX) * 2; 
+    if (Math.abs(walk) > 5) hasMoved = true; // If moved more than 5px, it's a drag
+    slider.scrollLeft = scrollLeft - walk;
+});
+
 slider.addEventListener('mouseup', () => {
     isDown = false;
     slider.style.scrollBehavior = 'smooth';
 });
 
-slider.addEventListener('mousemove', (e) => {
-    if (!isDown) return;
-    e.preventDefault();
-    const x = e.pageX - slider.offsetLeft;
-    const walk = (x - startX) * 2; 
-    slider.scrollLeft = scrollLeft - walk;
-});
-
 // ==========================================
-// 2. PRO AUTO-POPUP (Intersection Observer)
-// ==========================================
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.classList.add('is-active');
-        } else {
-            entry.target.classList.remove('is-active');
-            entry.target.classList.remove('is-revealed'); // Hide info when scrolled away
-        }
-    });
-}, { root: slider, threshold: 0.8 });
-
-// ==========================================
-// 3. RENDERER
+// 2. CARD INTERACTION ENGINE
 // ==========================================
 function renderCarousel() {
     const container = document.getElementById('game-carousel');
@@ -54,35 +41,45 @@ function renderCarousel() {
         card.style.setProperty('--theme-color', game.themeColor);
         card.style.border = `2px solid ${game.themeColor}`;
         
-        card.onclick = () => {
-            // If it's not the active card, scroll to it first
+        card.addEventListener('click', (e) => {
+            if (hasMoved) return; // Don't flip if we were just dragging
+
+            // 1. If it's not the active card, scroll to it
             if (!card.classList.contains('is-active')) {
                 card.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
                 return;
             }
+
+            // 2. Toggle the Reveal class (Back and Forth)
+            const isRevealed = card.classList.contains('is-revealed');
             
-            // If active but not revealed, reveal info
-            if (!card.classList.contains('is-revealed')) {
+            // Close all other cards first
+            document.querySelectorAll('.carousel-card').forEach(c => c.classList.remove('is-revealed'));
+            
+            if (!isRevealed) {
                 card.classList.add('is-revealed');
                 if(window.ROOT_ASSETS.tapSound) new Audio(window.ROOT_ASSETS.tapSound).play().catch(e=>{});
-            } else if (!game.disabled) {
-                // If revealed, launch
-                window.location.href = `${game.folder}/index.html`;
+            } else {
+                // If already revealed, it flips back to Artwork (unless button is hit)
+                card.classList.remove('is-revealed');
             }
-        };
+        });
 
         card.innerHTML = `
             <div class="card-artwork">
-                <img src="${game.coverArt}" class="game-cover-art" onerror="this.style.opacity='0.2'">
+                <img src="${game.coverArt}" class="game-cover-art">
                 <div class="relative z-20 flex flex-col items-center">
-                    <div class="text-8xl mb-4 drop-shadow-[0_0_15px_rgba(255,255,255,0.5)]">${game.emoji}</div>
-                    <h3 class="text-3xl font-black font-mono uppercase" style="color: #fff; text-shadow: 0 0 10px ${game.themeColor}">${game.title}</h3>
+                    <div class="text-6xl mb-2">${game.emoji}</div>
+                    <h3 class="text-xl font-black font-mono uppercase text-white">${game.title}</h3>
                 </div>
             </div>
             <div class="card-info">
-                <h3 class="text-xl font-black mb-2" style="color: ${game.themeColor}">${game.title}</h3>
-                <p class="text-slate-300 text-sm mb-6">${game.description}</p>
-                <button class="w-full py-4 ${game.buttonColor} text-black font-black rounded-2xl uppercase tracking-widest shadow-lg">
+                <h3 class="text-lg font-black mb-2" style="color: ${game.themeColor}">${game.title}</h3>
+                <p class="text-slate-300 text-xs mb-4">${game.description}</p>
+                <!-- NAVIGATION IS ONLY HERE -->
+                <button onclick="event.stopPropagation(); window.location.href='${game.folder}/index.html'" 
+                        class="w-full py-3 ${game.buttonColor} text-black font-black rounded-xl uppercase text-sm ${game.disabled ? 'opacity-50' : ''}"
+                        ${game.disabled ? 'disabled' : ''}>
                     ${game.disabled ? 'Coming Soon' : 'Play Now'}
                 </button>
             </div>
@@ -93,6 +90,16 @@ function renderCarousel() {
     });
 }
 
-renderCarousel();
+// ... Keep existing Intersection Observer, Cheat Mode, and Admin logic ...
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('is-active');
+        } else {
+            entry.target.classList.remove('is-active');
+            entry.target.classList.remove('is-revealed'); 
+        }
+    });
+}, { root: slider, threshold: 0.7 });
 
-// ... Insert the Teacher Cheat Mode and Idea Vault logic from previous Batch 1 here ...
+renderCarousel();
