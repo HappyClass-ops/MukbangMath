@@ -1,16 +1,21 @@
-// ==========================================
-// ARCADE ROOT ASSETS
-// ==========================================
-// Place files in: MukbangMath/assets/
+/** * MAIN MENU ASSETS 
+ * Place files in: MukbangMath/assets/
+ */
 
 window.ROOT_ASSETS = {
-    // If an image link breaks, it falls back to this invisible pixel
-    fallbackImage: "https://upload.wikimedia.org/wikipedia/commons/c/ca/1x1.png", 
+    // -----------------------------------------------------------------
+    // BACKGROUND MUSIC
+    // -----------------------------------------------------------------
+    // Paste a URL here (from Google/Dropbox/Vocaroo) 
+    // OR just put the filename like 'assets/menu_music.mp3'
+    SoundOfArcadeMenu: "https://media.vocaroo.com/mp3/15gsH2QdDGX5",
+
+    // -----------------------------------------------------------------
+    // IMAGES & LOGOS
+    // -----------------------------------------------------------------
+    // If a game's cover art link breaks, it will show this instead:
+    MainArcadeLogo: "", 
     
-    // Background Music (e.g. 'assets/menu-music.mp3')
-    menuMusicFile: "", 
-    
-    // UI Sound Effects
-    swipeSound: "", // e.g. 'assets/swipe.mp3'
-    tapSound: "",   // e.g. 'assets/tap.mp3'
+    // A fallback invisible pixel so the menu doesn't look "broken"
+    ImageSafetyNet: "https://upload.wikimedia.org/wikipedia/commons/c/ca/1x1.png"
 };

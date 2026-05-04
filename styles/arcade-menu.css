@@ -1,95 +1,59 @@
-/* GLOBAL FIXES */
-body {
-    user-select: none; /* Stops the highlighting bug on PC */
-    -webkit-user-select: none;
+/* =========================================
+   ARCADE MENU STYLES (VERTICAL GRID)
+   ========================================= */
+.arcade-bg {
+    background-color: #090a0f;
+    background-image: 
+        linear-gradient(0deg, transparent 24%, rgba(0, 255, 255, .1) 25%, rgba(0, 255, 255, .1) 26%, transparent 27%, transparent 74%, rgba(0, 255, 255, .1) 75%, rgba(0, 255, 255, .1) 76%, transparent 77%, transparent 100%),
+        linear-gradient(90deg, transparent 24%, rgba(0, 255, 255, .1) 25%, rgba(0, 255, 255, .1) 26%, transparent 27%, transparent 74%, rgba(0, 255, 255, .1) 75%, rgba(0, 255, 255, .1) 76%, transparent 77%, transparent 100%);
+    background-size: 50px 50px;
+    animation: panBg 20s linear infinite;
+}
+
+/* THE NEON GRID */
+.game-grid-container {
+    display: grid;
+    grid-template-columns: 1fr; /* 1 column on mobile */
+    gap: 1.5rem;
+    width: 100%;
+    max-width: 900px;
+    padding: 1rem;
+}
+
+/* 2 columns on tablets and PCs */
+@media (min-width: 640px) {
+    .game-grid-container {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+.arcade-card {
+    transition: transform 0.2s, box-shadow 0.2s;
+    border-radius: 1.5rem;
+    position: relative;
     overflow: hidden;
 }
 
-.no-scrollbar::-webkit-scrollbar { display: none; }
-.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-
-.game-carousel-container {
-    display: flex;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    gap: 1.5rem;
-    padding: 2rem 50vw; 
-    cursor: grab;
-    align-items: center;
-    height: 70vh; /* Keeps the carousel contained so buttons don't fall off */
+/* The "Pop-out" hover effect for PC */
+.arcade-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,255,255,0.4);
 }
 
-.game-carousel-container:active { cursor: grabbing; }
-
-.carousel-card {
-    flex: 0 0 280px; /* Slightly narrower for mobile safety */
-    height: 380px;   /* Slightly shorter for mobile safety */
-    scroll-snap-align: center;
-    position: relative;
-    border-radius: 1.5rem;
-    background: #000;
-    transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.3s ease;
-}
-
-/* ARTWORK LAYER */
-.card-artwork {
-    position: absolute;
-    inset: 0;
-    z-index: 10;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    transition: opacity 0.4s ease;
-}
-
-/* INFO LAYER */
-.card-info {
-    position: absolute;
-    inset: 0;
-    z-index: 5;
-    background: rgba(0, 0, 0, 0.95);
-    padding: 1.5rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-/* THE TOGGLE STATES */
-.carousel-card.is-active {
-    transform: scale(1.1);
-    box-shadow: 0 0 30px var(--theme-color);
-}
-
-.carousel-card.is-revealed .card-artwork {
-    opacity: 0;
-    pointer-events: none;
-}
-
-.carousel-card.is-revealed .card-info {
-    opacity: 1;
-    z-index: 15; /* Brings info to the front so buttons are clickable */
-}
-
-.game-cover-art {
+/* IMAGE BOUNDING BOX - Forces images to fit perfectly! */
+.image-box {
     width: 100%;
-    height: 100%;
-    object-fit: cover;
-    position: absolute;
-    opacity: 0.4;
+    height: 140px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(255,255,255,0.05);
+    border-radius: 1rem;
+    margin-bottom: 1rem;
 }
 
-/* MOBILE ADJUSTMENTS */
-@media (max-height: 700px) {
-    .carousel-card {
-        height: 320px;
-        flex: 0 0 240px;
-    }
-    .game-carousel-container {
-        padding-top: 1rem;
-    }
+.image-box img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain; /* MAGIC RULE: No stretching! */
 }
