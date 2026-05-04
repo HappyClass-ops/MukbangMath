@@ -1,5 +1,5 @@
 /* =========================================
-   ARCADE MENU STYLES (SCI-FI THEME)
+   ARCADE MENU STYLES
    ========================================= */
 .arcade-bg {
     background-color: #090a0f;
@@ -10,35 +10,91 @@
     animation: panBg 20s linear infinite;
 }
 
-@keyframes panBg { 
-    from { background-position: 0 0; } 
-    to { background-position: -50px -50px; } 
-}
+@keyframes panBg { from { background-position: 0 0; } to { background-position: -50px -50px; } }
 
 .neon-text { text-shadow: 0 0 5px #0ff, 0 0 10px #0ff, 0 0 20px #0ff; color: #fff; }
 
-/* THE NETFLIX CAROUSEL */
-.game-carousel-container {
+/* THE PC-FRIENDLY HORIZONTAL SCROLLER */
+.game-scroller {
     display: flex;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
     gap: 2rem;
-    scrollbar-width: none; /* Hides scrollbar on Firefox */
-    -ms-overflow-style: none; /* Hides scrollbar on IE/Edge */
-}
-/* Hides scrollbar on Chrome/Safari */
-.game-carousel-container::-webkit-scrollbar {
-    display: none;
+    padding: 1rem 2rem 2rem 2rem;
 }
 
-/* THE CARDS */
+/* Custom Scrollbar so PC users can grab it */
+.game-scroller::-webkit-scrollbar { height: 10px; }
+.game-scroller::-webkit-scrollbar-thumb { background-color: #475569; border-radius: 5px; }
+
+/* FULL BLEED CARD SETUP */
 .arcade-card {
-    flex: 0 0 320px; /* Fixed width of the cards */
-    height: 420px;   /* Fixed height of the cards */
+    flex: 0 0 320px; 
+    height: 420px;   
     scroll-snap-align: center;
     border-radius: 2rem;
     position: relative;
     overflow: hidden;
     cursor: pointer;
     background-color: #000;
+}
+
+/* 1. Animated Background Image */
+.card-bg-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Stretches to fill */
+    z-index: 1;
+    opacity: 0.6;
+    animation: slowBreath 15s infinite alternate ease-in-out;
+    transition: filter 0.3s;
+}
+
+@keyframes slowBreath {
+    0% { transform: scale(1); }
+    100% { transform: scale(1.15); }
+}
+
+/* 2. Front Layer (Title over Image) */
+.card-front {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: flex;
+    align-items: flex-end; /* Pushes text to the bottom */
+    justify-content: center;
+    padding-bottom: 3rem;
+    background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 60%);
+    transition: opacity 0.3s ease;
+}
+
+/* 3. Back Layer (Description & Button) */
+.card-back {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    background: rgba(0,0,0,0.85); /* Black background fade */
+    backdrop-filter: blur(4px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+/* 4. THE FLIP LOGIC (Controlled by JS for perfect mobile tapping) */
+.arcade-card.flipped .card-front { opacity: 0; }
+.arcade-card.flipped .card-back { opacity: 1; pointer-events: auto; }
+.arcade-card.flipped .card-bg-img { filter: blur(2px) brightness(0.5); }
+
+/* Add native hover for PC */
+@media (hover: hover) and (pointer: fine) {
+    .arcade-card:hover .card-front { opacity: 0; }
+    .arcade-card:hover .card-back { opacity: 1; pointer-events: auto; }
+    .arcade-card:hover .card-bg-img { filter: blur(2px) brightness(0.5); }
 }

@@ -20,18 +20,23 @@
     <div class="absolute inset-0 z-50 flex flex-col items-center arcade-bg text-white overflow-hidden pt-6 pb-6">
         
         <!-- Header & Idea Lightbulb -->
-        <div class="relative w-full max-w-6xl px-6 flex justify-center items-center mb-8">
+        <div class="relative w-full max-w-6xl px-6 flex justify-center items-center mb-8 mt-4">
             
-            <!-- Titles (Tap 7 times for Cheat Mode) -->
+            <!-- Titles -->
             <div class="text-center z-10">
                 <h1 id="arcade-title" class="text-4xl md:text-5xl font-black neon-text uppercase font-mono tracking-widest cursor-pointer select-none">Mr. Hemnell's</h1>
                 <h2 class="text-xl md:text-2xl font-bold text-cyan-200 tracking-wider mt-2">Learning Arcade</h2>
             </div>
 
-            <!-- The Minimalist Idea Dropbox -->
-            <button onclick="document.getElementById('modal-submit-idea').classList.remove('hidden')" class="absolute right-6 top-0 text-5xl md:text-6xl hover:scale-110 transition-transform cursor-pointer drop-shadow-[0_0_20px_#0f0] z-50" title="Submit an Idea!">
-                💡
-            </button>
+            <!-- The Minimalist Idea Dropbox with Text -->
+            <div class="absolute right-6 top-0 flex flex-col items-center">
+                <button onclick="document.getElementById('modal-submit-idea').classList.remove('hidden')" class="text-5xl md:text-6xl hover:scale-110 transition-transform cursor-pointer drop-shadow-[0_0_20px_#0f0] z-50 animate-pulse" title="Submit an Idea!">
+                    💡
+                </button>
+                <div class="text-green-400 font-mono text-[10px] md:text-xs mt-2 text-center leading-tight bg-black/50 p-1 rounded-md border border-green-500/50">
+                    Have ideas?<br>Put 'em here!
+                </div>
+            </div>
         </div>
 
         <!-- THE NETFLIX CAROUSEL CONTAINER -->
