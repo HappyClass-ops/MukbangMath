@@ -1,37 +1,23 @@
-// ==========================================
-// MASTER ARCADE DASHBOARD
-// ==========================================
-
 window.ARCADE_GAMES = [
     {
         id: "pacmath",
         title: "PAC-MATH",
         folder: "pacmath",
         emoji: "👻",
-        coverArt: "https://via.placeholder.com/400x300/000000/00FFFF?text=PAC-MATH", 
-        themeColor: "#0ff",
-        buttonColor: "bg-cyan-500",
-        description: "Navigate the maze, eat the math challenges, and unlock God-tier skins! Watch out for trackers!"
+        coverArt: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=600&q=80", 
+        themeColor: "#00FFFF",
+        buttonColor: "bg-cyan-400",
+        description: "Navigate the neon maze, solve math problems to power up, and hunt down the ghosts!"
     },
     {
         id: "mathbang",
         title: "MATH-BANG ASMR",
         folder: "mathbang",
         emoji: "🍔",
-        coverArt: "https://via.placeholder.com/400x300/000000/FF00FF?text=MATH-BANG", 
-        themeColor: "#f0f",
+        // Falling food/burger style background placeholder
+        coverArt: "https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=600&q=80", 
+        themeColor: "#FF00FF",
         buttonColor: "bg-pink-500",
-        description: "Become a famous streamer! Solve math to eat food, gain likes, and conquer the Master Chef."
-    },
-    {
-        id: "comingsoon",
-        title: "MYSTERY GAME",
-        folder: "#", 
-        emoji: "🚀",
-        coverArt: "https://via.placeholder.com/400x300/111111/FFFFFF?text=COMING+SOON",
-        themeColor: "#475569", 
-        buttonColor: "bg-slate-800",
-        description: "A new challenger is approaching... Keep studying to prepare!",
-        disabled: true 
+        description: "The ultimate ASMR streaming experience. Solve math to prepare and eat delicious treats!"
     }
 ];
