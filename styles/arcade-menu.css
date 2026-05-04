@@ -10,37 +10,43 @@
     animation: panBg 20s linear infinite;
 }
 
-/* THE NEON GRID */
-.game-grid-container {
-    display: grid;
-    grid-template-columns: 1fr; /* 1 column on mobile */
-    gap: 1.5rem;
-    width: 100%;
-    max-width: 900px;
-    padding: 1rem;
+@keyframes panBg { 
+    from { background-position: 0 0; } 
+    to { background-position: -50px -50px; } 
 }
 
-/* 2 columns on tablets and PCs */
+.neon-text { text-shadow: 0 0 5px #0ff, 0 0 10px #0ff, 0 0 20px #0ff; color: #fff; }
+
+/* THE RESPONSIVE NEON GRID */
+.game-grid-container {
+    display: grid;
+    grid-template-columns: 1fr; /* Mobile: 1 column */
+    gap: 1.5rem;
+    width: 100%;
+}
+
 @media (min-width: 640px) {
     .game-grid-container {
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: 1fr 1fr; /* PC/Tablet: 2 columns */
     }
 }
 
 .arcade-card {
-    transition: transform 0.2s, box-shadow 0.2s;
     border-radius: 1.5rem;
     position: relative;
     overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
 }
 
-/* The "Pop-out" hover effect for PC */
-.arcade-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0,255,255,0.4);
+/* MAGIC FIX: Only apply pop-out hover effects on devices with a real mouse (PCs) */
+@media (hover: hover) and (pointer: fine) {
+    .arcade-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,255,255,0.4);
+    }
 }
 
-/* IMAGE BOUNDING BOX - Forces images to fit perfectly! */
+/* PERFECT IMAGE BOX */
 .image-box {
     width: 100%;
     height: 140px;
@@ -50,10 +56,11 @@
     background: rgba(255,255,255,0.05);
     border-radius: 1rem;
     margin-bottom: 1rem;
+    overflow: hidden;
 }
 
 .image-box img {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain; /* MAGIC RULE: No stretching! */
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* Prevents image stretching */
 }
