@@ -10,35 +10,61 @@
 
 .neon-text { text-shadow: 0 0 5px #0ff, 0 0 10px #0ff, 0 0 20px #0ff; color: #fff; }
 
-/* THE NETFLIX CAROUSEL */
+/* HIDE ALL SCROLLBARS FOR THE CAROUSEL */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* THE PAGED CAROUSEL */
 .game-carousel-container {
     display: flex;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
     gap: 1.5rem;
-    padding: 1rem 2rem 2rem 2rem; /* Extra padding so hover shadows don't clip */
+    padding: 1rem 0; /* Removing side padding prevents weird scroll clipping */
 }
 
+/* THE CARDS (Fixed Height prevents mobile overflow) */
 .carousel-card {
-    flex: 0 0 320px; /* Forces cards to be 320px wide */
+    flex: 0 0 300px; /* Fixed Width */
+    height: 380px;   /* Fixed Height */
     scroll-snap-align: center;
+    position: relative;
+    cursor: pointer;
+    border-radius: 1rem;
     transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .carousel-card:hover {
-    transform: translateY(-10px) scale(1.05);
+    transform: translateY(-8px);
 }
 
-/* THE PERFECT IMAGE BOX */
-.image-bounding-box {
-    width: 100%;
-    height: 120px; /* Forces a strict height */
-    border-radius: 8px;
-    overflow: hidden;
+/* FRONT & BACK PANELS */
+.card-front, .card-back {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    transition: opacity 0.4s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
+.card-back {
+    opacity: 0;
+    pointer-events: none; /* Prevents clicking buttons while hidden */
+}
+
+/* THE FADE REVEAL MAGIC */
+.carousel-card.is-revealed .card-front { opacity: 0; pointer-events: none; }
+.carousel-card.is-revealed .card-back { opacity: 1; pointer-events: auto; }
+
+/* PERFECT IMAGE BOUNDING BOX */
 .game-cover-img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain; /* MAGIC RULE: Fits image perfectly inside without stretching! */
+    width: 90%;
+    height: 180px;
+    object-fit: cover; /* Forces images to fit the box beautifully */
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    border: 2px solid rgba(255,255,255,0.2);
 }

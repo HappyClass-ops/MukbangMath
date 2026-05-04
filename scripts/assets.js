@@ -4,9 +4,13 @@
 // Place files in: MukbangMath/assets/
 
 window.ROOT_ASSETS = {
-    // If an image link breaks in the menu, it will automatically switch to this:
-    fallbackImage: "https://upload.wikimedia.org/wikipedia/commons/c/ca/1x1.png", // A blank invisible pixel
+    // If an image link breaks, it falls back to this invisible pixel
+    fallbackImage: "https://upload.wikimedia.org/wikipedia/commons/c/ca/1x1.png", 
     
-    // Want a real MP3 instead of the synth? Paste the URL or filename here (e.g. 'assets/menu-music.mp3')
-    menuMusicFile: "" 
+    // Background Music (e.g. 'assets/menu-music.mp3')
+    menuMusicFile: "", 
+    
+    // UI Sound Effects
+    swipeSound: "", // e.g. 'assets/swipe.mp3'
+    tapSound: "",   // e.g. 'assets/tap.mp3'
 };
