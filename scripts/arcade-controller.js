@@ -1,4 +1,15 @@
 // ==========================================
+// 0. FORCED MIGRATION (Ensures clean slate for v2)
+// ==========================================
+(function() {
+    if (localStorage.getItem('arcade_v2_reset') !== 'true') {
+        console.log("🧹 New Modular Update Detected. Wiping stale cache...");
+        localStorage.clear();
+        localStorage.setItem('arcade_v2_reset', 'true');
+    }
+})();
+
+// ==========================================
 // 1. RENDER THE NETFLIX CAROUSEL
 // ==========================================
 function renderArcade() {

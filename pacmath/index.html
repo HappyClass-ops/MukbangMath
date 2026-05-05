@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Pac-Math</title>
+    
+    <!-- 1. CORE LIBRARIES -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- 2. FIREBASE -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="../scripts/firebase-init.js"></script>
+
+    <!-- 3. STYLES -->
+    <link rel="stylesheet" href="../styles/global.css">
+    <link rel="stylesheet" href="styles/pacmath.css">
+</head>
+
+<body class="bg-black overflow-hidden touch-none">
+
+    <div id="pacmath-root">
+        <div class="header">
+            <h2>PAC-MATH</h2>
+            <h4>Prep 2A Level</h4>
+        </div>
+        <div class="game-container">
+            <div id="heartContainer">❤️❤️❤️</div>
+            <canvas id="gameCanvas" width="380" height="420"></canvas>
+            <img id="teacherCameo" src="https://i.ibb.co/8gQyRn1K/20260426-131526.jpg" alt="Mr Hemnell">
+
+            <!-- Skin Unlock Modal -->
+            <div id="skinUnlockModal" class="overlay hidden" style="border: 4px solid gold; box-shadow: 0 0 30px gold;">
+                <h1 id="skinUnlockTitle" style="color: #FFD700; margin: 0; text-transform: uppercase;">New Skin Unlocked!</h1>
+                <h2 id="unlockedSkinName" style="color: white; margin: 15px 0;">Hard Mode</h2>
+                <div style="font-size: 60px; margin-bottom: 20px;">🎉</div>
+                <button id="btnContinueGame" class="action-btn blue">AWESOME!</button>
+            </div>
+
+            <!-- Startup Msg -->
+            <div id="startupMsg" class="overlay hidden" style="background: rgba(0,0,0,0.7); z-index: 25;">
+                <h1 id="startupText" style="color: yellow; margin: 0; font-size: 40px; animation: pulse 1s infinite;">READY!</h1>
+            </div>
+
+            <!-- Main Menu -->
+            <div id="mainMenu" class="overlay">
+                <h1 style="color: yellow; margin: 0; font-size: 34px;">PAC-MATH</h1>
+                <p style="color: #ccc; margin-bottom: 15px;">Ready to learn?</p>
+                <button id="btnPlay" class="action-btn">PLAY</button>
+                <button id="btnCustomize" class="action-btn" style="background-color: #FF00FF; color: white;">CUSTOMIZE</button>
+                <button id="btnHowTo" class="action-btn tutorial-btn">HOW TO PLAY?</button>
+                <button id="btnScores" class="action-btn blue" style="font-size: 15px; padding: 8px; width: 60%;">HIGH SCORES</button>
+                <button id="btnArcadeReturn" class="action-btn red" style="margin-top: 15px; width: 60%; font-size: 15px;">🏠 ARCADE</button>
+            </div>
+
+            <!-- Level Menu -->
+            <div id="levelMenu" class="overlay hidden">
+                <h2 style="color: white; margin-top: 0;">Select Level</h2>
+                <div class="subject-list">
+                    <button class="subject-btn level-btn" data-level="classic" style="background-color: yellow;">⭐ Classic Arcade</button>
+                    <button class="subject-btn level-btn locked" id="levelDeepSea" data-level="underwater" style="background-color: #1a1a1a; color: white; border: 2px solid #3399FF;">🔒 Deep Sea (Reach 1200pts in Classic)</button>
+                    <button id="btnBackToMainFromLevel" class="action-btn red" style="margin-top: 15px; width: 50%;">BACK</button>
+                </div>
+            </div>
+
+            <!-- Customize Menu -->
+            <div id="customizeMenu" class="overlay hidden">
+                <h2 style="color: #FF00FF; margin: 0 0 5px 0; font-size: 22px;">Character Setup</h2>
+                <canvas id="previewCanvas" width="100" height="100"></canvas>
+                <h4 style="margin: 0; color: #aaa;">Skins</h4>
+                <div id="skinContainer">
+                    <button class="color-btn active" data-color="yellow" style="background-color: yellow;"></button>
+                    <button class="color-btn" data-color="#00FFFF" style="background-color: #00FFFF;"></button>
+                    <button class="color-btn" data-color="#FF66CC" style="background-color: #FF66CC;"></button>
+                    <button class="color-btn locked" id="skinHard" data-color="hard" style="background-color: #1a1a1a;"></button>
+                    <button class="color-btn locked" id="skinExpert" data-color="expert" style="background-color: #1a1a1a;"></button>
+                    <button class="color-btn locked" id="skinGod" data-color="god" style="background-color: #1a1a1a;"></button>
+                    <button class="color-btn locked" id="skinScuba" data-color="scuba" style="background-color: #1a1a1a;" title="Scuba Diver"></button>
+                </div>
+                <div id="unlockMsg" style="font-size: 11px;"></div>
+                <h4 style="margin: 0 0 5px 0; color: #aaa;">Accessories</h4>
+                <div>
+                    <button class="acc-btn active" data-acc="none">None</button>
+                    <button class="acc-btn" data-acc="bow">🎀 Bow</button>
+                </div>
+                <button id="btnCloseCustomize" class="action-btn red" style="margin-top: 10px; padding: 10px; font-size: 16px;">SAVE & EXIT</button>
+            </div>
+
+            <!-- How To Menu -->
+            <div id="howToMenu" class="overlay hidden">
+                <h2 style="color: #3399FF; margin: 0 0 10px 0;">How to Play</h2>
+                <div style="color: white; text-align: left; font-size: 14px; line-height: 1.4; max-height: 60%; overflow-y: auto; padding: 0 10px;">
+                    <p>🍎 Use <b>Arrows</b> or <b>WASD</b> to move Pac-Math.</p>
+                    <p>🍎 Eat <b>green gems</b> to get a Power-Up question.</p>
+                    <p>🍎 Solve the question to resume and get points!</p>
+                    <p>🍎 Avoid <b>Ghosts</b>! If they catch you, you lose a heart.</p>
+                    <p>🍎 <b>Red Gems</b> are Boss Challenges! Solve them to hunt ghosts!</p>
+                </div>
+                <button id="btnCloseHowTo" class="action-btn" style="margin-top: 20px;">GOT IT!</button>
+            </div>
+
+            <!-- Mode Menu -->
+            <div id="modeMenu" class="overlay hidden">
+                <h2 style="color: white; margin-top: 0;">Select Subject</h2>
+                <div class="subject-list">
+                    <button class="subject-btn" data-subject="addition">➕ Addition</button>
+                    <button class="subject-btn" data-subject="subtraction">➖ Subtraction</button>
+                    <button class="subject-btn" data-subject="multiplication">✖️ Multiplication</button>
+                    <button class="subject-btn" data-subject="division">➗ Division</button>
+                    <button class="subject-btn" data-subject="fractions">🍕 Fractions</button>
+                    <button id="btnBackToMain" class="action-btn red" style="margin-top: 5px; width: 50%;">BACK</button>
+                </div>
+            </div>
+
+            <!-- Speed Menu -->
+            <div id="speedMenu" class="overlay hidden">
+                <h2 style="color: white; margin-top: 0;">Choose Game Speed</h2>
+                <button class="speed-btn" data-speed="1">🐢 Slow</button>
+                <button class="speed-btn" data-speed="2">🚶 Normal</button>
+                <button class="speed-btn" data-speed="4">🏃 Fast</button>
+                <button class="speed-btn" data-speed="5">🚀 Ultra Fast</button>
+            </div>
+
+            <!-- MCQ Modal -->
+            <div id="mcqModal" class="overlay hidden">
+                <h2 style="color: #00FF00; margin-top: 0; margin-bottom: 5px;" id="questionHeader">POWER UP!</h2>
+                <div id="questionText">Rolling...</div>
+                <div class="options-grid" id="optionsContainer"></div>
+            </div>
+
+            <!-- Leaderboard -->
+            <div id="scoresMenu" class="overlay hidden">
+                <h2 style="color: #3399FF; margin-top: 0;">Top Scores</h2>
+                <div id="scoresList" style="width: 80%; text-align: left; margin-bottom: 15px; font-family: monospace;"></div>
+                <button id="btnCloseScores" class="action-btn red" style="width: 50%;">CLOSE</button>
+            </div>
+
+            <!-- End Screen -->
+            <div id="endScreen" class="overlay hidden">
+                <h1 id="endTitle" style="color: #FF3333; margin: 0;">GAME OVER</h1>
+                <h3 style="color: white; margin: 5px 0;">Score: <span id="endScore">0</span></h3>
+                <div id="reportCard"><div id="mistakesList"></div></div>
+                <button id="btnViewScoresFromEnd" class="action-btn" style="background-color: #FFD700; color: black; width: 80%; margin-bottom: 5px;">LEADERBOARD</button>
+                <button class="action-btn blue btnMenuReturn">MAIN MENU</button>
+                <button id="btnArcadeReturnEnd" class="action-btn red" style="margin-top: 5px; width: 80%;">🏠 ARCADE</button>
+            </div>
+        </div>
+
+        <div class="dpad">
+            <button id="btnUp" style="grid-column: 2; grid-row: 1;">⬆️</button>
+            <button id="btnLeft" style="grid-column: 1; grid-row: 2;">⬅️</button>
+            <button id="btnRight" style="grid-column: 3; grid-row: 2;">➡️</button>
+            <button id="btnDown" style="grid-column: 2; grid-row: 2;">⬇️</button>
+        </div>
+
+        <!-- Ghost Mode Tools UI -->
+        <div id="ghost-tools-container" class="hidden fixed bottom-24 right-4 z-[100] flex flex-col items-end gap-2">
+            <div id="ghost-menu" class="hidden bg-blue-900 border-2 border-blue-400 p-4 rounded-2xl shadow-2xl flex flex-col gap-2 mb-2">
+                <h4 class="text-white font-black text-xs text-center border-b border-blue-400 pb-2 mb-1 uppercase tracking-widest">Ghost Tools</h4>
+                <button id="ghost-btn-invinc" class="bg-purple-600 text-white px-3 py-2 rounded-lg font-bold text-[10px] active:scale-95 shadow-md">Toggle God Mode</button>
+                <button id="ghost-btn-score" class="bg-green-600 text-white px-3 py-2 rounded-lg font-bold text-[10px] active:scale-95 shadow-md">+1000 Points</button>
+                <button id="ghost-btn-unlock" class="bg-yellow-500 text-yellow-900 px-3 py-2 rounded-lg font-bold text-[10px] active:scale-95 shadow-md">Unlock All</button>
+                <button id="ghost-btn-disable" class="bg-red-500 text-white px-3 py-2 rounded-lg font-bold text-[10px] active:scale-95 shadow-md">Exit Ghost Mode</button>
+            </div>
+            <button id="ghost-toggle-btn" class="w-12 h-12 bg-blue-600 rounded-full shadow-lg border-2 border-white text-2xl flex items-center justify-center active:scale-90">👻</button>
+        </div>
+    </div>
+
+    <!-- 4. LEGO BLOCKS -->
+    <script src="scripts/assets.js"></script>
+    <script src="scripts/constants.js"></script>
+    <script src="scripts/settings.js"></script>
+    <script src="scripts/skins.js"></script>
+    <script src="scripts/math-engine.js"></script>
+    <script src="scripts/pacman.js"></script>
+    
+    <!-- 5. THE MAIN ENGINE -->
+    <script src="scripts/game-engine.js"></script>
+
+</body>
+</html>
