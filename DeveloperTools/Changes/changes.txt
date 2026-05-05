@@ -1,0 +1,2 @@
+ In Mathbang, the UI is still messed up, it will suddenly drop down when money is too much, and cause the questiosn to get stuck underneath.
+  In pacmath, the leaderboard doesn't seem to be working.
